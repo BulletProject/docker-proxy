@@ -93,6 +93,9 @@ RUN \
 	# forward request and error logs to docker log collector
 	&& ln -sf /dev/stdout /var/log/nginx/access.log \
 	&& ln -sf /dev/stderr /var/log/nginx/error.log
+#envsubset
+
+RUN apk add gettext libintl
 
 ADD default.conf.template /etc/nginx/conf.d/default.conf.template
 
