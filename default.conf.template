@@ -1,0 +1,24 @@
+worker_processes 2;
+
+events {
+    worker_connections 1024;
+}
+
+stream {
+    log_format proxy '$remote_addr [$time_local] '
+                     '$protocol $status $bytes_sent $bytes_received '
+                     '$session_time "$upstream_addr" '
+                     '"$upstream_bytes_sent" "$upstream_bytes_received" "$upstream_connect_time"';
+
+    upstream minecraft_upstreams {
+        server ${MINECRAFT_PORT_ADDRESS}:${MINECRAFT_PORT};
+    }
+
+    server {
+        error_log off;
+        access_log off;
+        listen 19132 ${MINECRAFT_PROTOCOL};
+        proxy_pass minecraft_upstreams;
+        proxy_timeout 60s;
+    }
+}
