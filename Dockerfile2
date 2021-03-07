@@ -1,0 +1,18 @@
+FROM ubuntu:20.04
+
+MAINTAINER haniokasai <htek@haniokasai.com>
+
+ENV DEBIAN_FRONTEND=noninteractive
+
+RUN mkdir -p /data /scripts
+RUN touch /scripts/initialstart
+
+
+RUN sed -i.bak -e "s%http://[^ ]\+%http://ftp.jaist.ac.jp/pub/Linux/ubuntu/%g" /etc/apt/sources.list
+RUN apt update
+RUN apt install nginx-full
+RUN apt clean
+
+ADD default.conf.template /etc/nginx/conf.d/default.conf.template
+
+ENTRYPOINT /bin/sh -c "envsubst < /etc/nginx/conf.d/default.conf.template > /etc/nginx/nginx.conf && nginx -g 'daemon off;'" 
